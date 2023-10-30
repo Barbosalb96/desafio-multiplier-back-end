@@ -18,5 +18,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('login-view', [AuthController::class, 'view']);
-Route::post('login', [AuthController::class, 'login'])->name('login-action');
+Route::prefix('login')->group(function () {
+    Route::get('', [AuthController::class, 'view']);
+    Route::post('', [AuthController::class, 'login'])->name('login-action');
+});
+
