@@ -17,9 +17,8 @@ class AuthController extends Controller
 
     public function login(AuthLoginRequest $authLoginRequest)
     {
-        $credentials = [$authLoginRequest->validated()];
+        $credentials = $authLoginRequest->validated();
         if (Auth::attempt($credentials)) {
-            $authLoginRequest->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
 

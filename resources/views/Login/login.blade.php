@@ -12,7 +12,7 @@
 <body>
 <div class="container d-flex align-items-center justify-content-center  vh-100 ">
     <div class="card col-8 p-4">
-        <form action="{{route('login-action')}}" method="post">
+        <form action="{{route('login.action')}}" method="post">
             @method('post')
             @csrf()
             <div class="title d-flex  justify-content-center my-3">
