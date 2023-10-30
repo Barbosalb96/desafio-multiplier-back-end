@@ -15,7 +15,8 @@ class ClientController extends Controller
 {
     public function __construct(
         private readonly ClientServices $clientServices
-    ) {
+    )
+    {
 
     }
 
@@ -43,7 +44,7 @@ class ClientController extends Controller
             $this->clientServices->store($clientStoreRequest->validated());
 
             $message = [
-                'message' => 'Client successfully',
+                'message' => trans('message.created_success'),
             ];
 
             return (new MessageResource($message))
@@ -57,7 +58,7 @@ class ClientController extends Controller
             $this->clientServices->update($clientUpdateRequest->validated());
 
             $message = [
-                'message' => 'Client updated successfully',
+                'message' => trans('message.update_success'),
             ];
 
             return (new MessageResource($message))
@@ -70,7 +71,7 @@ class ClientController extends Controller
         return $this->handleExceptions(function () use ($idPublic) {
             $this->clientServices->delete($idPublic);
             $message = [
-                'message' => 'Client deleted successfully',
+                'message' => trans('message.delete_success'),
             ];
 
             return (new MessageResource($message))

@@ -9,24 +9,24 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
+    public function view()
+    {
+        return view('login.login');
+    }
+
     public function login(AuthLoginRequest $authLoginRequest)
     {
         $credentials = [$authLoginRequest->validated()];
-
         if (Auth::attempt($credentials)) {
             $authLoginRequest->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Email ou senha invalidos',
         ]);
     }
-    public function showRegistrationForm()
-    {
-        return view('auth.register');
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();

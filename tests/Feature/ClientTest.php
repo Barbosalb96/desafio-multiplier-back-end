@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Client\Entities\Client;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,12 +20,13 @@ class ClientTest extends TestCase
     public function test_create_client_success(): void
     {
         $user = User::factory(1)->create()->first();
-        $clints = $this->generateClients();
+        $clients = $this->generateClients();
 
         $response = $this->actingAs($user)
-            ->postJson('api/client', $clints);
+            ->postJson('api/client', $clients);
 
         $response->assertStatus(200);
+        $response->assertJson(fn(AssertableJson $json) => $json->where('data.message', trans('message.created_success')));
     }
 
     /**
@@ -32,8 +34,8 @@ class ClientTest extends TestCase
      */
     public function test_create_client_fail_no_auth(): void
     {
-        $clints = $this->generateClients();
-        $response = $this->postJson('api/client', $clints);
+        $clients = $this->generateClients();
+        $response = $this->postJson('api/client', $clients);
         $response->assertStatus(401);
         $response->assertJson(fn(AssertableJson $json) => $json->has('message'));
     }
@@ -44,14 +46,101 @@ class ClientTest extends TestCase
     public function test_create_client_fail_params_invalid(): void
     {
         $user = User::factory(1)->create()->first();
-        $clints = $this->generateClients();
-        $clints['cnpj'] = '123456789123';
+        $clients = $this->generateClients();
+        $clients['cnpj'] = '123456789123';
 
         $response = $this->actingAs($user)
-            ->postJson('api/client', $clints);
+            ->postJson('api/client', $clients);
 
         $response->assertBadRequest();
         $response->assertJson(fn(AssertableJson $json) => $json->where('message', 'O CNPJ não é válido.'));
+    }
+
+    /**
+     * test_create_client_fail_params_invalid
+     */
+    public function test_update_client(): void
+    {
+        $user = $this->storeClient();
+        $client = Client::first();
+        $clients = $this->generateClients();
+        $clients['id_public'] = $client->id_public;
+        $clients['nome_fantasia'] = 'Update Client';
+
+        $response = $this->actingAs($user)
+            ->putJson('api/client', $clients);
+        $response->assertStatus(200);
+        $response->assertJson(fn(AssertableJson $json) => $json->where('data.message', trans('message.update_success')));
+    }
+
+    /**
+     * test_get_client
+     */
+    public function test_get_client(): void
+    {
+        $user = $this->storeClient();
+
+        $response = $this->actingAs($user)
+            ->get('api/client');
+
+        $response->assertStatus(200);
+        $response->assertJson(fn(AssertableJson $json) => $json->hasAny(['data', 'links', 'meta']));
+    }
+
+    /**
+     * test_get_client
+     */
+    public function test_find_client(): void
+    {
+        $user = $this->storeClient();
+
+        $client = Client::first();
+
+        $response = $this->actingAs($user)
+            ->get('api/client/' . $client->id_public);
+
+        $response->assertStatus(200);
+        $response->assertJson(fn(AssertableJson $json) => $json
+            ->where('data.id_public', $client->id_public)
+            ->where('data.nome_fantasia', $client->nome_fantasia)
+            ->where('data.email', $client->email)
+            ->where('data.cnpj', $client->cnpj)
+            ->where('data.endereco', $client->endereco)
+            ->where('data.cidade', $client->cidade)
+            ->where('data.estado', $client->estado)
+            ->where('data.pais', $client->pais)
+            ->where('data.telefone', $client->telefone)
+        );
+    }
+
+
+    /**
+     * test_delete_client
+     */
+    public function test_delete_client(): void
+    {
+        $user = $this->storeClient();
+        $client = Client::first();
+
+        $response = $this->actingAs($user)
+            ->delete('api/client/' . $client->id_public);
+
+        $response->assertStatus(200);
+        $response->assertJson(fn(AssertableJson $json) => $json->where('data.message', trans('message.delete_success')));
+    }
+
+
+    private function storeClient()
+    {
+        $user = User::factory(1)->create()->first();
+
+        $clients = $this->generateClients();
+
+        $this->actingAs($user)
+            ->postJson('api/client', $clients);
+
+        return $user;
+
     }
 
     /**

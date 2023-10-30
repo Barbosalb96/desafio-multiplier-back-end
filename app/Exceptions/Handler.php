@@ -38,8 +38,8 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (NotFoundHttpException $exception, Request $request) {
             $message = !empty($exception->getMessage())
-            ? $exception->getMessage()
-            : __('error.route_not_found');
+                ? $exception->getMessage()
+                : trans('error.route_not_found');
 
             return response()->json([
                 'message' => $message,
@@ -48,13 +48,13 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (AuthenticationException $exception, Request $request) {
             return response()->json([
-                'message' => __('auth.unauthenticated'),
+                'message' => trans('error.unauthenticated'),
             ], Response::HTTP_UNAUTHORIZED);
         });
 
         $this->renderable(function (MethodNotAllowedHttpException $exception, Request $request) {
             return response()->json([
-                'message' => __('error.method_not_allowed'),
+                'message' => trans('error.method_not_allowed'),
             ], Response::HTTP_METHOD_NOT_ALLOWED);
         });
 
@@ -68,7 +68,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (Throwable $exception, Request $request) {
             if ($exception instanceof MethodNotAllowedHttpException) {
                 return response()->json([
-                    'message' => 'Método HTTP não permitido para esta rota.',
+                    'message' => trans('error.method_http_allowed'),
                 ], Response::HTTP_METHOD_NOT_ALLOWED);
             }
 
@@ -77,8 +77,8 @@ class Handler extends ExceptionHandler
             }
 
             $status = method_exists($exception, 'getStatusCode')
-            ? $exception->getStatusCode()
-            : Response::HTTP_INTERNAL_SERVER_ERROR;
+                ? $exception->getStatusCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
 
             $message = $exception->getMessage();
 
