@@ -27,9 +27,30 @@
         </div>
     </div>
 </nav>
+
+<h1 class="m-4">Listagem Clientes</h1>
 <div class="card m-4">
-    <h1>Listagem Clientes</h1>
-    <table class="table table-striped">
+    <form action="{{route('dashboard.index')}}" class="m-3">
+        <div class=" col-12 d-flex">
+            <div class="form-group mx-2">
+                <label for="">name</label>
+                <input class="form-control " type="text" name="nome_fantasia">
+            </div>
+            <div class="form-group mx-2">
+                <label for="">cnpj</label>
+                <input class="form-control" type="text" name="cnpj">
+            </div>
+            <div class="form-group mx-2">
+                <label for="">telefone</label>
+                <input class="form-control" type="text" name="telefone">
+            </div>
+        </div>
+        <div class="d-flex mx-4">
+            <button class='btn  btn-primary'>Buscar</button>
+            <a class='btn mx-4 btn-primary' href="{{route('dashboard.index')}}">limpar</a>
+        </div>
+    </form>
+    <table class="table table-striped ">
         <thead>
         <tr>
             <th scope="col">ID PUBLIC</th>

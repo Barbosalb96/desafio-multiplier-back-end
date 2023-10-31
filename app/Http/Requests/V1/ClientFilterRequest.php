@@ -10,8 +10,7 @@ class ClientFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string'],
-            'description' => ['nullable', 'string'],
+            'nome_fantasia' => ['nullable', 'string'],
             'cnpj' => ['nullable', 'string'],
             'telefone' => ['nullable', 'string'],
         ];

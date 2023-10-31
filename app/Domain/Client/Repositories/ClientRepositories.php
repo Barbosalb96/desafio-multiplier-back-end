@@ -24,22 +24,20 @@ class ClientRepositories
 
     public function all(array $filterParams)
     {
-        $name = Arr::get($filterParams, 'name');
-        $description = Arr::get($filterParams, 'description');
+        $name = Arr::get($filterParams, 'nome_fantasia');
         $cnpj = Arr::get($filterParams, 'cnpj');
         $telefone = Arr::get($filterParams, 'telefone');
-        $page = Arr::get($filterParams, 'page');
-        $perPage = Arr::get($filterParams, 'perPage');
         $cacheKey = 'clients_' . md5(serialize($filterParams));
-        return Cache::rememberForever($cacheKey, function () use ($name, $description, $cnpj, $telefone, $page, $perPage) {
+
+        return Cache::rememberForever($cacheKey, function () use ($name, $cnpj, $telefone) {
             return $this->client->query()
                 ->with('qsas')
-                ->when(!empty($name), fn($query) => $query->where('name', 'like', "%{$name}%"))
-                ->when(!empty($description), fn($query) => $query->where('description', 'like', "%{$description}%"))
+                ->when(!empty($name), fn($query) => $query->where('nome_fantasia', 'like', "%{$name}%"))
                 ->when(!empty($cnpj), fn($query) => $query->where('cnpj', 'like', "%{$cnpj}%"))
                 ->when(!empty($telefone), fn($query) => $query->where('telefone', 'like', "%{$telefone}%"))
-                ->paginate($perPage);
+                ->paginate();
         });
+
     }
 
     public function find(string $idPublic): Model|Builder

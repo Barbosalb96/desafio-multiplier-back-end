@@ -17,8 +17,6 @@ class DashboardController extends Controller
     public function index(ClientFilterRequest $clientFilterRequest)
     {
         $paramsFilter = $clientFilterRequest->validated();
-        $paramsFilter['page'] = $clientFilterRequest->input('page');
-        $paramsFilter['perPage'] = $clientFilterRequest->input('PerPage');
         $data = $this->clientServices->all($paramsFilter);
         return view('Dashboard.index', compact('data'));
     }
