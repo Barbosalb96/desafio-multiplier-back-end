@@ -11,18 +11,6 @@ services:
             - db
         command: sh /var/www/html/docker/init.sh
 
-    db:
-        build:
-            context: .
-            dockerfile: ./docker/mysql/Dockerfile
-        environment:
-            MYSQL_DATABASE: laravel
-            MYSQL_USER: laravel_user
-            MYSQL_PASSWORD: secretpassword
-            MYSQL_ROOT_PASSWORD: rootpassword
-        volumes:
-            - ./data:/var/lib/mysql
-
     webserver:
         image: nginx:latest
         ports:
@@ -32,3 +20,12 @@ services:
             - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
         depends_on:
             - app
+    db:
+        image: mysql:latest
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
