@@ -12,7 +12,7 @@ class AuthController extends Controller
 
     public function view()
     {
-        return view('login.login');
+        return view('Login.login');
     }
 
     public function login(AuthLoginRequest $authLoginRequest)

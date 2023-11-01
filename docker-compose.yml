@@ -2,31 +2,39 @@ version: "3.8"
 
 services:
     app:
+        container_name: desafio-php
         build:
             context: .
             dockerfile: ./docker/php/Dockerfile
         volumes:
-            - ./app:/var/www/html
+            - ./:/var/www
         depends_on:
             - db
-        command: sh /var/www/html/docker/init.sh
+        command: sh /var/www/docker/init.sh
 
     webserver:
         image: nginx:latest
+        container_name: desafio-nginx
         ports:
-            - "8000:80"
+            - "8065:80"
         volumes:
-            - ./app:/var/www/html
-            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
         depends_on:
             - app
     db:
         image: mysql:latest
-        ports:
-            - "3306:3306"
+        container_name: desafio-mysql
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-xu1#z3croSt6hL+0#*@o@R+HUsW6WR}'
             MYSQL_DATABASE: '${DB_DATABASE:-desafio}'
             MYSQL_USER: '${DB_USERNAME:-root}'
             MYSQL_PASSWORD: '${DB_PASSWORD:-}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - ./.docker/bancos/mysql/latest:/var/lib/mysql
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+        ports:
+            - "3309:3306"
+

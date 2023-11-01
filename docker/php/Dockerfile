@@ -18,13 +18,15 @@ RUN docker-php-ext-install \
     zip \
     gd \
     pdo \
-    pdo_mysql \
+    pdo_mysql
 
-WORKDIR /var/www/html
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY . /var/www/html
+WORKDIR /var/www
 
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
+# COPY . /var/www/html
+
+# RUN chown -R www-data:www-data /var/www/html/storage
+# RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
 
 CMD ["php-fpm"]
