@@ -11,6 +11,8 @@ services:
         depends_on:
             - db
         command: sh /var/www/docker/init.sh
+        networks:
+            - api-desafio
 
     webserver:
         image: nginx:latest
@@ -22,9 +24,11 @@ services:
             - ./docker/nginx/:/etc/nginx/conf.d/
         depends_on:
             - app
+        networks:
+            - api-desafio
 
     db:
-        image: mysql:latest
+        image: mariadb:11.0
         container_name: desafio-mysql
         environment:
             MYSQL_ROOT_PASSWORD: 'root'
@@ -39,3 +43,10 @@ services:
             - "3309:3306"
         expose:
             - 3309
+        networks:
+            - api-desafio
+
+networks:
+    api-desafio:
+        name: desafio
+        driver: bridge
